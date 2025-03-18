@@ -14,6 +14,7 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Models
         public List<ProductImage>? Images { get; set; }
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
+
     }
-   
+
 }

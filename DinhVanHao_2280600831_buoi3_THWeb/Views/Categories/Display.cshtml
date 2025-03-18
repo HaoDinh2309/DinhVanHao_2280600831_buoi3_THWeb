@@ -1,0 +1,10 @@
+﻿@model Category
+
+<h2>Chi Tiết Danh Mục</h2>
+
+<hr />
+
+<p><strong>Tên Danh Mục:</strong> @Model.Name</p>
+
+<a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary">Chỉnh Sửa</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại Danh sách</a>

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<DinhVanHao_2280600831_buoi3_THWeb.Models.Category>
+
+<h2>Categories</h2>
+
+<a asp-action="Add" class="btn btn-primary">Create New</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>
+                    <a asp-action="Display" asp-route-id="@category.Id">Chi Tiết</a> |
+                    <a asp-action="Update" asp-route-id="@category.Id">Sửa</a> |
+                    <a asp-action="Delete" asp-route-id="@category.Id" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
