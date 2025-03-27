@@ -1,13 +1,13 @@
-﻿
-using DinhVanHao_2280600831_buoi3_THWeb.Models;
+﻿using DinhVanHao_2280600831_buoi3_THWeb.Models;
 using DinhVanHao_2280600831_buoi3_THWeb.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
+namespace DinhVanHao_2280600831_buoi3_THWeb.Areas.Admin.Controllers
 {
-
+    [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
 
     public class ProductController : Controller
     {

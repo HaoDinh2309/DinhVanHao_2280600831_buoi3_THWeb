@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
+namespace DinhVanHao_2280600831_buoi3_THWeb.Areas.Admin.Controllers
 {
-    
+    [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoriesController : Controller
     {
         private readonly IProductRepository _productRepository;

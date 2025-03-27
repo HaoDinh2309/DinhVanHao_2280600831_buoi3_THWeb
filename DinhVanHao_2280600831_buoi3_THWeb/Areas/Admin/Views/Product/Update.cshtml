@@ -1,7 +1,9 @@
 ﻿
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @model DinhVanHao_2280600831_buoi3_THWeb.Models.Product
 @using Microsoft.AspNetCore.Mvc.Rendering
 <h2>Edit Product</h2>
@@ -34,4 +36,5 @@
         <img src="@Model.ImageUrl" alt="Product Image" style="max-width: 200px;" />
     </div>
     <button type="submit" class="btn btn-primary">Update</button>
-</form> 
+</form>
+

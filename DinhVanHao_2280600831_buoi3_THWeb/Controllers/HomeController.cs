@@ -1,22 +1,26 @@
 using System.Diagnostics;
 using DinhVanHao_2280600831_buoi3_THWeb.Models;
+using DinhVanHao_2280600831_buoi3_THWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IProductRepository _productRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IProductRepository productRepository)
         {
-            _logger = logger;
+            _productRepository = productRepository;
         }
 
-        public IActionResult Index()
+        // Hi?n th? danh sách s?n ph?m
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var products = await _productRepository.GetAllAsync();
+            return View(products);
         }
+       
 
         public IActionResult Privacy()
         {
