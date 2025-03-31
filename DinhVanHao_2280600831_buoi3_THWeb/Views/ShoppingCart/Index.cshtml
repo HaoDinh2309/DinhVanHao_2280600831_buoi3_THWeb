@@ -3,6 +3,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@{
+    ViewData["Title"] = "Your Shopping Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 @model ShoppingCart
 
 <div class="container mt-4">
@@ -26,7 +31,22 @@
                     {
                         <tr class="align-middle text-center">
                             <td class="p-3">@item.Name</td>
-                            <td class="p-3">@item.Quantity</td>
+                            <td class="p-3">
+                                <form method="post" asp-action="UpdateCartQuantity">
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+
+                                    <button type="submit" name="quantity" value="@(item.Quantity - 1)" class="btn btn-sm btn-outline-secondary"
+                                    @(item.Quantity <= 1 ? "disabled" : "")>
+                                        ➖
+                                    </button>
+
+                                    <span class="mx-2 fw-bold">@item.Quantity</span>
+
+                                    <button type="submit" name="quantity" value="@(item.Quantity + 1)" class="btn btn-sm btn-outline-primary">
+                                        ➕
+                                    </button>
+                                </form>
+                            </td>
                             <td class="p-3">@item.Price.ToString("#,##0") VND</td>
                             <td class="p-3 fw-bold">@((item.Price * item.Quantity).ToString("#,##0")) VND</td>
                             <td class="p-3">

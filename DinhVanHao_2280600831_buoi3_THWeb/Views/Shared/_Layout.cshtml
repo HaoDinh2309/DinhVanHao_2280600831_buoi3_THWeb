@@ -6,24 +6,48 @@
     <title>@ViewData["Title"] - DinhVanHao</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
+        /* Navbar Styling */
         .navbar {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        .nav-link {
+        .navbar-brand {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .navbar .nav-link {
             font-weight: 500;
-            transition: 0.3s;
+            transition: color 0.3s ease;
         }
 
-            .nav-link:hover {
+            .navbar .nav-link:hover {
                 color: #007bff !important;
+                text-decoration: underline;
             }
 
+        .navbar-toggler-icon {
+            background-color: #007bff;
+        }
+
+        /* Cart Button Styling */
         .cart-btn {
             position: relative;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 30px;
+            font-size: 14px;
         }
+
+            .cart-btn:hover {
+                background-color: #007bff;
+                color: white;
+            }
 
         .cart-badge {
             position: absolute;
@@ -36,49 +60,168 @@
             padding: 3px 7px;
         }
 
+        /* Footer Styling */
         footer {
             background: #f8f9fa;
-            padding: 20px 0;
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+
+            footer p {
+                font-size: 14px;
+                color: #6c757d;
+            }
+
+            footer a {
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+        /* Tooltips */
+        .tooltip-inner {
+            background-color: #007bff;
+        }
+
+        /* Responsive Styling */
+        @@media (max-width: 991.98px) {
+            .navbar-nav
+
+        {
+            margin-top: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-btn {
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .navbar-collapse {
             text-align: center;
         }
+
+        }
+
+        @@media (max-width: 767.98px) {
+            .container
+
+        {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        footer {
+            padding: 20px 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        }
+
+        @@media (max-width: 575.98px) {
+            .navbar .nav-link
+
+        {
+            padding: 0.5rem 0;
+        }
+
+        .cart-btn {
+            width: 100%;
+            margin-left: 0 !important;
+            margin-top: 1rem;
+        }
+
+        .cart-badge {
+            right: 30%;
+        }
+
+        }
+
+        /* Animation Effects */
+        .navbar .nav-link {
+            position: relative;
+        }
+
+            .navbar .nav-link::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 0;
+                background-color: #007bff;
+                transition: width 0.3s ease;
+            }
+
+            .navbar .nav-link:hover::after {
+                width: 100%;
+            }
+
+        /* Product Card Hover Effect */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
     </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">DinhVanHao</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-home"></i> DinhVanHao
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a></li>
-
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Add-Products</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Categories" asp-action="Index">Add-Categories</a></li>
-                        }
-                        else
-                        {
-                            <li class="nav-item"><a class="nav-link text-dark login-required" href="#">Add-Products</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark login-required" href="#">Add-Categories</a></li>
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-user-shield"></i> Privacy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">
+                                <i class="fas fa-plus-circle"></i> Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Categories" asp-action="Index">
+                                <i class="fas fa-cogs"></i> Add Category
+                            </a>
+                        </li>
                     </ul>
 
                     <partial name="_LoginPartial" />
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-dark cart-btn ms-3">
+                        <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-dark cart-btn ms-3" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to cart">
                             <i class="bi bi-cart-fill me-1"></i> Cart
                             <span id="cart-count" class="cart-badge">0</span>
                         </a>
                     }
                     else
                     {
-                        <a href="#" class="btn btn-outline-dark cart-btn ms-3 login-required">
+                        <a href="#" class="btn btn-outline-dark cart-btn ms-3 login-required" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Login to view cart">
                             <i class="bi bi-cart-fill me-1"></i> Cart
                             <span class="cart-badge">0</span>
                         </a>
@@ -97,6 +240,20 @@
     <footer>
         <div class="container">
             <p class="mb-0">&copy; 2025 - DinhVanHao | <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></p>
+            <div class="mt-3">
+                <a href="#" class="me-3 text-dark">
+                    <i class="fab fa-facebook fa-lg"></i>
+                </a>
+                <a href="#" class="me-3 text-dark">
+                    <i class="fab fa-twitter fa-lg"></i>
+                </a>
+                <a href="#" class="me-3 text-dark">
+                    <i class="fab fa-instagram fa-lg"></i>
+                </a>
+                <a href="#" class="text-dark">
+                    <i class="fab fa-linkedin fa-lg"></i>
+                </a>
+            </div>
         </div>
     </footer>
 
@@ -106,6 +263,12 @@
 
     <script>
         $(document).ready(function () {
+            // Tooltip Initialization
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
             // Kiểm tra nếu chưa đăng nhập và nhấn vào Product, Category, Cart thì yêu cầu đăng nhập
             $(".login-required").click(function (e) {
                 e.preventDefault();
@@ -114,23 +277,64 @@
 
             // Cập nhật số lượng sản phẩm trong giỏ hàng
             function updateCartCount() {
-                $.get("/ShoppingCart/GetCartItemCount", function (response) {
-                    $("#cart-count").text(response.count);
+                $.ajax({
+                    url: "/ShoppingCart/GetCartItemCount",
+                    type: "GET",
+                    success: function (response) {
+                        $("#cart-count").text(response.count);
+                    },
+                    error: function () {
+                        console.log("Không thể cập nhật số lượng giỏ hàng");
+                    }
                 });
             }
-            updateCartCount(); // Load số lượng ban đầu
+
+            // Gọi hàm cập nhật giỏ hàng khi trang tải
+            if ($("#cart-count").length > 0) {
+                updateCartCount();
+            }
 
             // Khi nhấn nút "Add to Cart"
-            $(".add-to-cart").click(function (e) {
+            $(document).on("click", ".add-to-cart", function (e) {
                 e.preventDefault();
                 var productId = $(this).data("id");
+                var quantity = $("#quantity-" + productId).val() || 1;
 
-                $.post("/ShoppingCart/AddToCart", { productId: productId, quantity: 1 }, function (response) {
-                    $("#cart-count").text(response.cartItemCount);
-                }).fail(function () {
-                    alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!");
+                $.ajax({
+                    url: "/ShoppingCart/AddToCart",
+                    type: "POST",
+                    data: { productId: productId, quantity: quantity },
+                    success: function (response) {
+                        $("#cart-count").text(response.cartItemCount);
+
+                        // Hiển thị thông báo thành công
+                        var alert = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                            'Sản phẩm đã được thêm vào giỏ hàng!' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                            '</div>';
+
+                        $("main").prepend(alert);
+
+                        // Tự động ẩn thông báo sau 3 giây
+                        setTimeout(function() {
+                            $(".alert").alert('close');
+                        }, 3000);
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!");
+                    }
                 });
             });
+
+            // Thêm hiệu ứng cho hover trên navbar
+            $(".navbar .nav-item").hover(
+                function() {
+                    $(this).find(".nav-link").addClass("active");
+                },
+                function() {
+                    $(this).find(".nav-link").removeClass("active");
+                }
+            );
         });
     </script>
 

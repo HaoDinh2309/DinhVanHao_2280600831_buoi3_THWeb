@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 {
 
-
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -38,11 +38,13 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Kiểm tra và lưu ảnh
                 if (imageUrl != null)
                 {
                     product.ImageUrl = await SaveImage(imageUrl);
                 }
 
+                // Kiểm tra danh mục có tồn tại không
                 var categoryExists = await _categoryRepository.GetByIdAsync(product.CategoryId);
                 if (categoryExists == null)
                 {
@@ -52,14 +54,28 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
                     return View(product);
                 }
 
+                // Lưu sản phẩm vào cơ sở dữ liệu
                 await _productRepository.AddAsync(product);
                 return RedirectToAction(nameof(Index));
             }
 
+            // Nếu ModelState không hợp lệ, trả về View với thông báo lỗi
             var categoriesList = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categoriesList, "Id", "Name");
+
+            // Kiểm tra và in ra các lỗi trong ModelState để giúp debug
+            foreach (var key in ModelState.Keys)
+            {
+                var errors = ModelState[key].Errors;
+                foreach (var error in errors)
+                {
+                    Console.WriteLine($"Error in {key}: {error.ErrorMessage}");
+                }
+            }
+
             return View(product);
         }
+
 
 
         private async Task<string> SaveImage(IFormFile image)

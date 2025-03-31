@@ -28,6 +28,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+
 var app = builder.Build();
 
 

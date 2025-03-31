@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 {
-    
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private readonly IProductRepository _productRepository;
