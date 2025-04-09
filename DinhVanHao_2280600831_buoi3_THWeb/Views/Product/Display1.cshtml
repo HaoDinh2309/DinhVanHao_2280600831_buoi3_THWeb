@@ -1,11 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Display";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-@model DinhVanHao_2280600831_buoi3_THWeb.Models.Product
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -100,11 +93,15 @@
                 <div class="card">
                     <img src="@Model.ImageUrl" alt="Ảnh sản phẩm" class="img-fluid product-image" />
                     <div class="card-body text-center">
-                        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary btn-action">
-                            <i class="fas fa-edit"></i> Chỉnh Sửa
+
+                        <!-- Add to Cart button -->
+                        <a href="javascript:void(0);" id="addToCartBtn" class="btn btn-lg w-100 rounded-pill shadow-sm" style="background-color: #f4a261; color: white; border: none;">
+                            <i class="fas fa-shopping-cart me-2"></i> Add to Cart
                         </a>
-                        <a asp-action="Index" class="btn btn-secondary btn-action">
-                            <i class="fas fa-arrow-left"></i> Quay lại
+
+                        <!-- Quay lại (Back to Home) button -->
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary btn-lg px-4 py-2 rounded-pill mt-3">
+                            <i class="fas fa-home me-2"></i> Quay lại
                         </a>
                     </div>
                 </div>
@@ -135,5 +132,36 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript for handling Add to Cart -->
+    <script>
+        document.getElementById('addToCartBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            var productId = '@Model.Id';
+            var quantity = 1;
+
+            // Gửi yêu cầu Ajax để thêm vào giỏ hàng
+            fetch('/ShoppingCart/AddToCart?productId=' + productId + '&quantity=' + quantity, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Cập nhật số lượng giỏ hàng
+                    var currentCartCount = parseInt(document.getElementById('cart-count').innerText) || 0;
+                    document.getElementById('cart-count').innerText = currentCartCount + 1;
+
+                    // Thông báo thành công
+                    alert("Sản phẩm đã được thêm vào giỏ hàng!");
+                } else {
+                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                }
+            })
+            .catch(error => {
+                                    alert("Bạn cần đăng nhập để truy cập chức năng này!");
+            });
+        });
+    </script>
+
 </body>
 </html>

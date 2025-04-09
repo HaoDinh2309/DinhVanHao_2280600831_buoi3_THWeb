@@ -181,21 +181,23 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-home"></i> DinhVanHao
+                    <img src="~/images/logo.jpg" alt="Logo" style="width: 200px; height: auto;">
                 </a>
+
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home"></i> Home
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-user-shield"></i> Privacy
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-user-shield"></i> Privacy
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="DSSP">
+                                <i class="fa-solid fa-list"></i> Danh Sách Sản Phẩm
                             </a>
                         </li>
                         <li class="nav-item">
@@ -214,7 +216,7 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-dark cart-btn ms-3" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to cart">
+                        <a asp-controller="ShoppingCart" asp-area="" asp-action="Index" class="btn btn-outline-dark cart-btn ms-3" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to cart">
                             <i class="bi bi-cart-fill me-1"></i> Cart
                             <span id="cart-count" class="cart-badge">0</span>
                         </a>

@@ -4,76 +4,262 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating">
-                <input asp-for="Input.FullName" class="form-control" autocomplete="fullname" aria-required="true" />
-                <label asp-for="Input.FullName">Full Name</label>
-                <span asp-validation-for="Input.FullName" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-floating">
-                <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control">
-                    <option disabled selected>Select Role</option>
-                </select>
-            </div>
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="card border-0 shadow-lg overflow-hidden">
+                <div class="row g-0">
+                    <!-- Banner side column -->
+                    <div class="col-lg-5 d-none d-lg-block">
+                        <div class="bg-gradient-primary h-100 d-flex flex-column justify-content-center text-white p-5" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+                            <div class="text-center mb-5">
+                                <i class="fas fa-user-shield fa-4x mb-4 animate__animated animate__fadeIn"></i>
+                                <h2 class="display-6 fw-bold">Welcome</h2>
+                                <p class="lead">Join our community today and explore all the features.</p>
+                            </div>
+                            <div class="benefits mt-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded-circle bg-white text-primary p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>Secure and encrypted data</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded-circle bg-white text-primary p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <span>Quick and easy registration</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-white text-primary p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <span>24/7 customer support</span>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                }
-            }
-        </section>
+                    </div>
+
+                    <!-- Registration form column -->
+                    <div class="col-lg-7">
+                        <div class="card-body p-lg-5">
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bold text-primary mb-2"><i class="fas fa-user-plus me-2"></i>Create Your Account</h2>
+                                <p class="text-muted">Fill out the form below to get started</p>
+                            </div>
+
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-uppercase" asp-for="Input.FullName">Full Name</label>
+                                    <div class="input-group input-group-lg border rounded-3 overflow-hidden">
+                                        <span class="input-group-text bg-transparent border-0">
+                                            <i class="fas fa-user text-primary"></i>
+                                        </span>
+                                        <input asp-for="Input.FullName" class="form-control border-0 shadow-none" autocomplete="fullname" placeholder="Enter your full name" aria-required="true" />
+                                    </div>
+                                    <span asp-validation-for="Input.FullName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-uppercase" asp-for="Input.Email">Email Address</label>
+                                    <div class="input-group input-group-lg border rounded-3 overflow-hidden">
+                                        <span class="input-group-text bg-transparent border-0">
+                                            <i class="fas fa-envelope text-primary"></i>
+                                        </span>
+                                        <input asp-for="Input.Email" class="form-control border-0 shadow-none" autocomplete="username" placeholder="name@example.com" aria-required="true" />
+                                    </div>
+                                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-uppercase" asp-for="Input.Password">Password</label>
+                                    <div class="input-group input-group-lg border rounded-3 overflow-hidden">
+                                        <span class="input-group-text bg-transparent border-0">
+                                            <i class="fas fa-lock text-primary"></i>
+                                        </span>
+                                        <input asp-for="Input.Password" class="form-control border-0 shadow-none" autocomplete="new-password" placeholder="Create a strong password" aria-required="true" />
+                                        <button class="btn bg-transparent border-0" type="button" id="togglePassword">
+                                            <i class="fas fa-eye text-muted"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                                    <div class="password-strength mt-2">
+                                        <div class="d-flex">
+                                            <div class="bg-light rounded-pill flex-grow-1 mx-1" style="height: 4px;"></div>
+                                            <div class="bg-light rounded-pill flex-grow-1 mx-1" style="height: 4px;"></div>
+                                            <div class="bg-light rounded-pill flex-grow-1 mx-1" style="height: 4px;"></div>
+                                            <div class="bg-light rounded-pill flex-grow-1 mx-1" style="height: 4px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-uppercase" asp-for="Input.ConfirmPassword">Confirm Password</label>
+                                    <div class="input-group input-group-lg border rounded-3 overflow-hidden">
+                                        <span class="input-group-text bg-transparent border-0">
+                                            <i class="fas fa-shield-alt text-primary"></i>
+                                        </span>
+                                        <input asp-for="Input.ConfirmPassword" class="form-control border-0 shadow-none" autocomplete="new-password" placeholder="Confirm your password" aria-required="true" />
+                                    </div>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-uppercase" asp-for="Input.Role">Select Role</label>
+                                    <div class="input-group input-group-lg border rounded-3 overflow-hidden">
+                                        <span class="input-group-text bg-transparent border-0">
+                                            <i class="fas fa-user-tag text-primary"></i>
+                                        </span>
+                                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select border-0 shadow-none">
+                                            <option disabled selected>Choose your role</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Điều khoản và Chính sách bảo mật -->
+                                <div class="mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="acceptTerms" required>
+                                        <label class="form-check-label" for="acceptTerms">
+                                            I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid mb-4">
+                                    <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg py-3">
+                                        <i class="fas fa-user-plus me-2"></i>Create Account
+                                    </button>
+                                </div>
+
+                                <div class="text-center mb-4">
+                                    <p>Already have an account? <a href="./Login" class="text-decoration-none fw-bold">Sign in</a></p>
+                                </div>
+
+                                @{
+                                    if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                                    {
+                                        <div class="text-center">
+                                            <div class="position-relative py-3">
+                                                <hr />
+                                                <span class="position-absolute top-50 start-50 translate-middle px-3 bg-white text-muted">or continue with</span>
+                                            </div>
+
+                                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                                <div class="d-flex justify-content-center gap-2 my-3">
+                                                    @foreach (var provider in Model.ExternalLogins!)
+                                                    {
+                                                        @if (provider.Name.ToLower() == "google")
+                                                        {
+                                                            <button type="submit" class="btn btn-outline-secondary rounded-circle p-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                                <i class="fab fa-google fa-lg"></i>
+                                                            </button>
+                                                        }
+                                                        else if (provider.Name.ToLower() == "facebook")
+                                                        {
+                                                            <button type="submit" class="btn btn-outline-secondary rounded-circle p-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                                <i class="fab fa-facebook-f fa-lg"></i>
+                                                            </button>
+                                                        }
+                                                        else if (provider.Name.ToLower() == "microsoft")
+                                                        {
+                                                            <button type="submit" class="btn btn-outline-secondary rounded-circle p-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                                <i class="fab fa-microsoft fa-lg"></i>
+                                                            </button>
+                                                        }
+                                                        else if (provider.Name.ToLower() == "twitter")
+                                                        {
+                                                            <button type="submit" class="btn btn-outline-secondary rounded-circle p-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                                <i class="fab fa-twitter fa-lg"></i>
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="submit" class="btn btn-outline-secondary rounded-circle p-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                                <i class="fas fa-external-link-alt fa-lg"></i>
+                                                            </button>
+                                                        }
+                                                    }
+                                                </div>
+                                            </form>
+                                        </div>
+                                    }
+                                    else if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                                    {
+                                        <!-- No external providers configured - hide this section -->
+                                    }
+                                }
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="fas fa-shield-alt me-1"></i> Your data is secured with 256-bit encryption
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('Input_Password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Simple password strength indicator
+        document.getElementById('Input_Password').addEventListener('input', function() {
+            const value = this.value;
+            const indicators = document.querySelectorAll('.password-strength .rounded-pill');
+
+            // Reset all indicators
+            indicators.forEach(ind => ind.classList.remove('bg-danger', 'bg-warning', 'bg-info', 'bg-success'));
+            indicators.forEach(ind => ind.classList.add('bg-light'));
+
+            if (value.length > 0) {
+                indicators[0].classList.remove('bg-light');
+                indicators[0].classList.add('bg-danger');
+            }
+
+            if (value.length >= 6) {
+                indicators[1].classList.remove('bg-light');
+                indicators[1].classList.add('bg-warning');
+            }
+
+            if (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value)) {
+                indicators[2].classList.remove('bg-light');
+                indicators[2].classList.add('bg-info');
+            }
+
+            if (value.length >= 10 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) {
+                indicators[3].classList.remove('bg-light');
+                indicators[3].classList.add('bg-success');
+            }
+        });
+    </script>
+        <style>
+             body {
+                 background-color: #fffdf5; /* Màu vàng nhạt giữ nguyên */
+             }
+    </style>
 }

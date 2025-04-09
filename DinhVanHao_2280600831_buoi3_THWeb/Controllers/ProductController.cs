@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 {
 
-    [Authorize(Roles = "Admin")]
+   
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -63,20 +63,16 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
             var categoriesList = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categoriesList, "Id", "Name");
 
-            // Kiểm tra và in ra các lỗi trong ModelState để giúp debug
-            foreach (var key in ModelState.Keys)
-            {
-                var errors = ModelState[key].Errors;
-                foreach (var error in errors)
-                {
-                    Console.WriteLine($"Error in {key}: {error.ErrorMessage}");
-                }
-            }
+            
 
             return View(product);
         }
 
-
+        public async Task<IActionResult> DSSP()
+        {
+            var products = await _productRepository.GetAllAsync();  // Hoặc lấy sản phẩm từ một nguồn dữ liệu
+            return View(products);
+        }
 
         private async Task<string> SaveImage(IFormFile image)
         {
@@ -108,44 +104,63 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
-        [HttpPost]
-        public async Task<IActionResult> Update(int id, Product product, IFormFile imageUrl)
-        {
-            ModelState.Remove("ImageUrl");
 
+        [HttpPost]
+        public async Task<IActionResult> Update(int id, Product product, IFormFile? imageUrl)
+        {
             if (id != product.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var existingProduct = await _productRepository.GetByIdAsync(id);
+            if (existingProduct == null)
             {
-                var existingProduct = await _productRepository.GetByIdAsync(id);
-
-                if (imageUrl == null)
-                {
-                    product.ImageUrl = existingProduct.ImageUrl;
-                }
-                else
-                {
-                    product.ImageUrl = await SaveImage(imageUrl);
-                }
-
-                existingProduct.Name = product.Name;
-                existingProduct.Price = product.Price;
-                existingProduct.Description = product.Description;
-                existingProduct.CategoryId = product.CategoryId;
-                existingProduct.ImageUrl = product.ImageUrl;
-
-                await _productRepository.UpdateAsync(existingProduct);
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            var categories = await _categoryRepository.GetAllAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name");
 
-            return View(product);
+            // Nếu không có ảnh mới, giữ ảnh cũ
+            if (imageUrl == null)
+            {
+                product.ImageUrl = existingProduct.ImageUrl;
+            }
+            else
+            {
+                product.ImageUrl = await SaveImage(imageUrl);
+            }
+
+            // Cập nhật thông tin sản phẩm
+            existingProduct.Name = product.Name;
+            existingProduct.Price = product.Price;
+            existingProduct.Description = product.Description;
+            existingProduct.CategoryId = product.CategoryId;
+            existingProduct.ImageUrl = product.ImageUrl;
+
+            if (!ModelState.IsValid)
+            {
+                var categories = await _categoryRepository.GetAllAsync();
+                ViewBag.Categories = new SelectList(categories, "Id", "Name");
+                return View(product);
+            }
+
+            await _productRepository.UpdateAsync(existingProduct);
+            return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Display1(int id)
+        {
+            // Thay thế _context bằng _productRepository
+            var product = await _productRepository.GetByIdAsync(id);
+
+            // Kiểm tra nếu sản phẩm không tồn tại
+            if (product == null)
+            {
+                return NotFound(); // Nếu sản phẩm không tồn tại, trả về lỗi 404
+            }
+
+            // Trả về view với thông tin sản phẩm
+            return View(product);
+        }
 
         public async Task<IActionResult> Delete(int id)
         {

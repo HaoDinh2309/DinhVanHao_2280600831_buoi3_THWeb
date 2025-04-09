@@ -1,0 +1,223 @@
+﻿@model IEnumerable<DinhVanHao_2280600831_buoi3_THWeb.Models.Product>
+
+@{
+    ViewData["Title"] = "Danh Sách Sản Phẩm";
+    int numOfQuantity = 1; // Định nghĩa biến số lượng
+}
+
+<!-- Hero Section -->
+<section class="bg-light py-5 mb-5 hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 text-center text-lg-start">
+                <h1 class="display-4 fw-bold mb-3" style="color: #303030;">Khám phá sản phẩm tuyệt vời</h1>
+                <p class="lead mb-4" style="color: #664e38;">Chọn lựa các sản phẩm chất lượng cao với thiết kế độc đáo và giá cả phải chăng</p>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <a href="#product-section" class="btn btn-primary btn-lg px-4 rounded-pill hero-btn">
+                        <i class="fas fa-shopping-basket me-2"></i>Xem sản phẩm
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block">
+                <img src="/images/hero-image.jpg" alt="Hero Image" class="img-fluid rounded-circle shadow-lg" onerror="this.src='https://via.placeholder.com/400x400?text=Hero+Image'">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Form -->
+<section class="container mb-5">
+    <form method="get" action="@Url.Action("DSSP", "Product")" class="d-flex justify-content-center">
+        <input type="text" name="searchQuery" class="form-control w-50" placeholder="Tìm kiếm sản phẩm..." value="@ViewBag.CurrentFilter" />
+        <button type="submit" class="btn btn-primary ms-2">Tìm kiếm</button>
+    </form>
+
+    <!-- Thêm thông báo kết quả tìm kiếm -->
+    @if (!string.IsNullOrEmpty(ViewBag.CurrentFilter))
+    {
+        <div class="alert alert-info mt-3">
+            Kết quả tìm kiếm cho: <strong>@ViewBag.CurrentFilter</strong> (@Model.Count() sản phẩm)
+        </div>
+    }
+</section>
+
+<!-- Category Filter -->
+<section class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0" style="color: #595959;">Danh Mục</h3>
+        <div class="dropdown">
+            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: #595959; border-color: #b08968;">
+                <i class="fas fa-sort me-1"></i>Sắp xếp
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item" href="#">Mới nhất</a></li>
+                <li><a class="dropdown-item" href="#">Giá: Thấp đến cao</a></li>
+                <li><a class="dropdown-item" href="#">Giá: Cao đến thấp</a></li>
+                <li><a class="dropdown-item" href="#">Phổ biến nhất</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-primary rounded-pill px-4 active">Tất cả</button>
+        <button class="btn btn-outline-dark rounded-pill px-4" style="color: #595959; border-color: #b08968;">Điện thoại</button>
+        <button class="btn btn-outline-dark rounded-pill px-4" style="color: #595959; border-color: #b08968;">Laptop</button>
+        <button class="btn btn-outline-dark rounded-pill px-4" style="color: #595959; border-color: #b08968;">Máy tính bảng</button>
+        <button class="btn btn-outline-dark rounded-pill px-4" style="color: #595959; border-color: #b08968;">Phụ kiện</button>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section id="product-section" class="container mb-5" style="background-color: #FCEFE6; padding: 30px; border-radius: 1rem;">
+    <div class="row mb-5">
+        <div class="col-md-8 mx-auto text-center">
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background-color: #f4c542; color: #595959;">DANH SÁCH SẢN PHẨM</span>
+            <h2 class="display-5 fw-bold mb-3" style="color: #595959;">Tất Cả Sản Phẩm</h2>
+            <div class="d-flex align-items-center justify-content-center mb-3">
+                <div class="border-top border-2 me-3" style="width: 50px; border-color: #b08968;"></div>
+                <i class="fas fa-gem" style="color: #b08968;"></i>
+                <div class="border-top border-2 ms-3" style="width: 50px; border-color: #b08968;"></div>
+            </div>
+            <p class="text-muted" style="color: #595959;">Khám phá đa dạng các sản phẩm chất lượng với giá tốt nhất trên thị trường</p>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col product-wrapper">
+                <div class="card product-card h-100 border-0 rounded-4 shadow-sm hover-shadow overflow-hidden">
+                    <div class="position-relative product-img-container">
+                        <a href="@Url.Action("Display1", "Product", new { id = item.Id })">
+                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 250px; object-fit: cover;">
+                        </a>
+                        <!-- Hot badge -->
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <span class="badge rounded-pill px-3 py-2" style="background-color: #f4a261; color: white;">HOT</span>
+                        </div>
+                        <!-- Sale badge -->
+                        <div class="position-absolute top-0 start-0 p-3">
+                            <span class="badge rounded-pill px-3 py-2" style="background-color: #b5c99a; color: #595959;">SALE</span>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0 p-3">
+                            <button class="btn btn-light btn-sm rounded-circle shadow-sm wishlist-btn">
+                                <i class="far fa-heart" style="color: #f4a261;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-center py-4">
+                        <div class="mb-2">
+                            <span class="badge rounded-pill px-2 py-1" style="background-color: rgba(244, 197, 66, 0.1); color: #b08968;">Best Seller</span>
+                            <div class="d-inline-flex align-items-center ms-2" style="color: #f4c542;">
+                                <i class="fas fa-star"></i>
+                                <span class="ms-1">4.8</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #595959;">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <div class="text-muted small mb-3" style="color: #b08968;">Premium Collection</div>
+                        <div class="mb-3">
+                            <span class="h5 fw-bold" style="color: #f4a261;">@item.Price.ToString("#,##0") VND</span>
+                            <span class="text-decoration-line-through ms-2 text-muted" style="color: #595959;">@((item.Price * 1.2m).ToString("#,##0")) VND</span>
+                        </div>
+                        <!-- Add to Cart Button -->
+                        <button onclick="addToCart(@item.Id, @numOfQuantity)" class="btn w-100 rounded-pill add-to-cart-btn" style="background-color: #f4a261; color: white; border: none;">
+                            <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                        </button>
+                    </div>
+
+                    <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center py-3">
+                        <div class="text-success" style="color: #b5c99a;">
+                            <i class="fas fa-circle me-1" style="font-size: 8px;"></i>
+                            <span>In Stock</span>
+                        </div>
+                        <div class="text-muted" style="color: #595959;">
+                            <i class="fas fa-truck me-1"></i>
+                            <span>Free Shipping</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5 mb-5" style="background-color: #FCEFE6;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h3 class="fw-bold mb-3" style="color: #595959;">Đăng ký nhận thông tin</h3>
+                <p class="text-muted mb-4" style="color: #b08968;">Đăng ký để nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt</p>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control form-control-lg rounded-pill-start" placeholder="Email của bạn" aria-label="Email của bạn">
+                    <button class="btn btn-lg rounded-pill-end px-4" type="button" style="background-color: #f4a261; color: white; border: none;">Đăng ký</button>
+                </div>
+                <p class="small text-muted" style="color: #595959;">Chúng tôi tôn trọng quyền riêng tư của bạn và sẽ không chia sẻ thông tin của bạn.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom CSS -->
+<style>
+    body {
+        background-color: #fffdf5;
+    }
+
+    /* Hero Section Enhancements */
+    .hero-section {
+        background: linear-gradient(135deg, #fffdf5 0%, #FCEFE6 100%) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        position: relative;
+    }
+
+    .hero-btn {
+        background-color: #f4a261 !important;
+        border-color: #f4a261 !important;
+        box-shadow: 0 4px 15px rgba(244, 162, 97, 0.3) !important;
+    }
+
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+        transition: all 0.3s ease;
+    }
+
+    .product-card {
+        transition: all 0.3s ease;
+    }
+
+    .product-img-container {
+        overflow: hidden;
+    }
+
+    .product-card:hover .product-img-container img {
+        transform: scale(1.05);
+    }
+</style>
+
+<!-- JavaScript for Add to Cart functionality -->
+<script>
+    function addToCart(productId, quantity) {
+        $.ajax({
+            url: '@Url.Action("AddToCart", "ShoppingCart")',
+            type: 'POST',
+            data: {
+                productId: productId,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert("Sản phẩm đã được thêm vào giỏ hàng!");
+                    $('#cart-count').text(response.totalQuantity); // Cập nhật số lượng giỏ hàng
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert("Bạn cần đăng nhập để truy cập chức năng này!");
+            }
+        });
+    }
+</script>

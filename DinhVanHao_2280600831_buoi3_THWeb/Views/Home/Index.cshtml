@@ -11,13 +11,13 @@
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto text-center text-white position-relative" style="margin-top: -220px;">
                 <div class="p-5 bg-white shadow rounded-4 text-dark">
-                    <h1 class="display-5 fw-bold mb-3">Hasaki</h1>
-                    <p class="lead text-muted mb-4">Khám phá vẻ đẹp, yêu thương từng khoảnh khắc</p>
+                    <h1 class="display-5 fw-bold mb-3" style="color: #595959;">SammiShop</h1>
+                    <p class="lead mb-4" style="color: #b08968;">Khám phá vẻ đẹp, yêu thương từng khoảnh khắc</p>
                     <div class="d-flex justify-content-center gap-3">
-                        <a href="#featured-products" class="btn btn-primary btn-lg px-4 rounded-pill">
+                        <a href="#featured-products" class="btn btn-lg px-4 rounded-pill" style="background-color: #f4a261; color: white; border: none;">
                             <i class="fas fa-fire me-2"></i>Shop Now
                         </a>
-                        <a href="#" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+                        <a href="#" class="btn btn-outline-secondary btn-lg px-4 rounded-pill" style="color: #595959; border-color: #595959;">
                             <i class="fas fa-info-circle me-2"></i>Learn More
                         </a>
                     </div>
@@ -28,18 +28,18 @@
 </section>
 
 <!-- Featured Products Section -->
-<section id="featured-products" class="py-5 bg-light">
+<section id="featured-products" class="py-5" style="background-color: #FCEFE6 ;">
     <div class="container">
         <div class="row mb-5">
             <div class="col-lg-6 col-md-8 mx-auto text-center">
-                <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">TOP SELECTION</span>
-                <h2 class="display-6 fw-bold">Featured Products</h2>
+                <span class="badge rounded-pill px-3 py-2 mb-2" style="background-color: #f4c542; color: #595959;">TOP SELECTION</span>
+                <h2 class="display-6 fw-bold" style="color: #595959;">Sản phẩm nổi bật</h2>
                 <div class="d-flex align-items-center justify-content-center mb-3">
-                    <div class="border-top border-2 border-primary me-3" style="width: 50px;"></div>
-                    <i class="fas fa-gem text-primary"></i>
-                    <div class="border-top border-2 border-primary ms-3" style="width: 50px;"></div>
+                    <div class="border-top border-2 me-3" style="width: 50px; border-color: #b08968;"></div>
+                    <i class="fas fa-gem" style="color: #b08968;"></i>
+                    <div class="border-top border-2 ms-3" style="width: 50px; border-color: #b08968;"></div>
                 </div>
-                <p class="text-muted">Curated selection of our best-selling and highest-rated products</p>
+                <p style="color: #595959;">Curated selection of our best-selling and highest-rated products</p>
             </div>
         </div>
 
@@ -51,48 +51,54 @@
                         <!-- Product image container with overlay -->
                         <div class="position-relative product-img-container">
                             <div class="product-labels position-absolute start-0 top-0 m-3 d-flex flex-column gap-2">
-                                <span class="badge bg-danger px-3 py-2 rounded-pill">HOT</span>
-                                <span class="badge bg-success px-3 py-2 rounded-pill">SALE</span>
+                                <span class="badge px-3 py-2 rounded-pill" style="background-color: #f4a261; color: white;">HOT</span>
+                                <span class="badge px-3 py-2 rounded-pill" style="background-color: #b5c99a; color: #595959;">SALE</span>
                             </div>
                             <div class="position-absolute end-0 top-0 m-3">
                                 <button class="btn btn-light rounded-circle shadow-sm p-2 wishlist-btn">
-                                    <i class="fas fa-heart text-danger"></i>
+                                    <i class="fas fa-heart" style="color: #f4a261;"></i>
                                 </button>
                             </div>
-                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 280px; object-fit: cover;">
-                            
+
+                            <!-- Wrap image with a link to the product detail page -->
+                            <a href="@Url.Action("Display1", "Product", new { id = item.Id })">
+                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 280px; object-fit: cover;">
+                            </a>
+
                         </div>
 
                         <!-- Product details -->
                         <div class="card-body text-center py-4 px-4">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Best Seller</span>
-                                <div class="d-flex text-warning">
+                                <span class="badge px-3 py-2 rounded-pill" style="background-color: rgba(244, 197, 66, 0.1); color: #b08968;">Best Seller</span>
+                                <div class="d-flex" style="color: #f4c542;">
                                     <i class="fas fa-star"></i>
                                     <span class="ms-1 small">4.8</span>
                                 </div>
                             </div>
 
-                            <h5 class="card-title fw-bold text-dark">@Html.DisplayFor(modelItem => item.Name)</h5>
-                            <p class="text-muted small mb-1">Premium Collection</p>
+                            <h5 class="card-title fw-bold" style="color: #595959;">@Html.DisplayFor(modelItem => item.Name)</h5>
+                            <p class="small mb-1" style="color: #b08968;">Premium Collection</p>
                             <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
-                                <span class="h5 fw-bold text-primary mb-0">@item.Price.ToString("#,##0") VND</span>
-                                <span class="text-decoration-line-through text-muted small">@((item.Price * 1.2m).ToString("#,##0")) VND</span>
+                                <span class="h5 fw-bold mb-0" style="color: #f4a261;">@item.Price.ToString("#,##0") VND</span>
+                                <span class="text-decoration-line-through small" style="color: #595959;">@((item.Price * 1.2m).ToString("#,##0")) VND</span>
                             </div>
                         </div>
 
                         <!-- Product footer -->
                         <div class="card-footer bg-white border-0 pt-0 pb-4 px-4">
-                            <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@item.Id" asp-route-quantity="@numOfQuantity"
-                               class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">
+                            <a href="javascript:void(0);"
+                               class="btn btn-lg w-100 rounded-pill shadow-sm"
+                               style="background-color: #f4a261; color: white; border: none;"
+                               onclick="addToCart(@item.Id, @numOfQuantity)">
                                 <i class="fas fa-shopping-cart me-2"></i> Add to Cart
                             </a>
 
                             <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="badge bg-success bg-opacity-10 text-success small">
+                                <span class="badge small" style="background-color: rgba(181, 201, 154, 0.1); color: #b5c99a;">
                                     <i class="fas fa-check-circle me-1"></i> In Stock
                                 </span>
-                                <span class="badge bg-dark bg-opacity-10 text-dark small">
+                                <span class="badge small" style="background-color: rgba(89, 89, 89, 0.1); color: #595959;">
                                     <i class="fas fa-truck me-1"></i> Free Shipping
                                 </span>
                             </div>
@@ -104,7 +110,7 @@
 
         <!-- View All Button -->
         <div class="text-center mt-5">
-            <a href="#" class="btn btn-outline-primary btn-lg px-5 rounded-pill">
+            <a href="#" class="btn btn-lg px-5 rounded-pill" style="background-color: transparent; color: #595959; border: 1px solid #b08968;">
                 <i class="fas fa-th-large me-2"></i> View All Products
             </a>
         </div>
@@ -112,9 +118,37 @@
 </section>
 
 
+
+<!-- JavaScript for Add to Cart AJAX -->
+<script>
+    function addToCart(productId, quantity) {
+        $.ajax({
+            url: '@Url.Action("AddToCart", "ShoppingCart")', // Gọi action AddToCart trong ShoppingCart controller
+            type: 'POST',
+            data: {
+                productId: productId,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert("Sản phẩm đã được thêm vào giỏ hàng!"); // Hiển thị thông báo thành công
+
+                    // Cập nhật số lượng giỏ hàng trên giao diện
+                    $('#cart-count').text(response.totalQuantity); // Cập nhật số lượng giỏ hàng
+                } else {
+                    alert(response.message); // Hiển thị thông báo lỗi nếu có
+                }
+            },
+            error: function() {
+                alert("Bạn cần đăng nhập để truy cập chức năng này!");
+            }
+        });
+    }
+</script>
+
 <style>
     body {
-        background-color: #fffdf5; /* Màu vàng nhạt */
+        background-color: #fffdf5; /* Màu vàng nhạt giữ nguyên */
     }
     /* Product Card Styles */
     .product-wrapper {
@@ -167,15 +201,10 @@
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2) !important;
-    }
-
-    .btn-outline-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.1) !important;
-    }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(176, 137, 104, 0.2) !important;
+        }
 
     /* General Styles */
     .rounded-4 {

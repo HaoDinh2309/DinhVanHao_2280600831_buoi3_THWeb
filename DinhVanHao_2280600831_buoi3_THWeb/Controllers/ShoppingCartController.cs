@@ -4,6 +4,7 @@ using DinhVanHao_2280600831_buoi3_THWeb.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 {
@@ -13,7 +14,6 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
 
         public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository)
         {
@@ -35,7 +35,6 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 
             if (cart == null || !cart.Items.Any())
             {
-                // Xử lý giỏ hàng trống...
                 return RedirectToAction("Index");
             }
 
@@ -56,7 +55,6 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 
             if (cart == null || !cart.Items.Any())
             {
-                // Xử lý giỏ hàng trống...
                 return RedirectToAction("Index");
             }
 
@@ -73,10 +71,9 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Xóa giỏ hàng sau khi đặt hàng thành công
             HttpContext.Session.Remove(cartSessionKey);
 
-            return View("OrderCompleted", order.Id); // Trang xác nhận hoàn thành đơn hàng
+            return View("OrderCompleted", order.Id);
         }
 
         [HttpGet]
@@ -95,29 +92,30 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> AddToCart(int productId, int quantity)
+public async Task<IActionResult> AddToCart(int productId, int quantity)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return RedirectToAction("Login", "Account");
+                return Json(new { success = false, message = "You need to log in first!" });
             }
 
-            var product = await GetProductFromDatabase(productId);
+            var product = await _productRepository.GetByIdAsync(productId);
             if (product == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Product not found!" });
             }
 
-            // Tạo key session theo User ID để mỗi tài khoản có giỏ hàng riêng
-            string cartSessionKey = $"Cart_{user.Id}";
+            // Lấy ảnh của sản phẩm từ bảng ProductImages
+            var imageUrl = product.ImageUrl;  // Lấy URL ảnh từ thuộc tính ImageUrl
 
+            string cartSessionKey = $"Cart_{user.Id}";
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>(cartSessionKey) ?? new ShoppingCart();
 
             var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
             if (existingItem != null)
             {
-                existingItem.Quantity += quantity; // Cộng dồn số lượng
+                existingItem.Quantity += quantity;  // Cộng dồn số lượng
             }
             else
             {
@@ -126,17 +124,15 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
                     ProductId = productId,
                     Name = product.Name,
                     Price = product.Price,
-                    Quantity = quantity
+                    Quantity = quantity,
+                    ImageUrl = imageUrl  // Lưu URL ảnh vào giỏ hàng
                 });
             }
 
-            // Lưu lại giỏ hàng vào Session với key riêng từng User
             HttpContext.Session.SetObjectAsJson(cartSessionKey, cart);
 
-            // Có thể thêm TempData để hiển thị thông báo thành công
-            TempData["SuccessMessage"] = $"Đã thêm {quantity} {product.Name} vào giỏ hàng!";
-
-            return RedirectToAction("Index");
+            int totalQuantity = cart.Items.Sum(i => i.Quantity);
+            return Json(new { success = true, message = $"Added {quantity} {product.Name} to cart!", totalQuantity = totalQuantity });
         }
 
         public async Task<IActionResult> Index()
@@ -149,6 +145,12 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
 
             string cartSessionKey = $"Cart_{user.Id}";
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>(cartSessionKey) ?? new ShoppingCart();
+
+            // Gỡ lỗi: in ra đường dẫn ảnh của các sản phẩm trong giỏ hàng
+            foreach (var item in cart.Items)
+            {
+                System.Diagnostics.Debug.WriteLine($"Product: {item.Name}, Image URL: {item.ImageUrl}");
+            }
 
             return View(cart);
         }
@@ -181,12 +183,13 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
         public async Task<IActionResult> UpdateCartQuantity(int productId, int quantity)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return RedirectToAction("Login", "Account");
+                return Json(new { success = false, message = "You need to log in first!" });
             }
 
             string cartSessionKey = $"Cart_{user.Id}";
@@ -197,14 +200,28 @@ namespace DinhVanHao_2280600831_buoi3_THWeb.Controllers
                 var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
                 if (item != null)
                 {
-                    item.Quantity = quantity; 
+                    // Kiểm tra số lượng hợp lệ (lớn hơn hoặc bằng 1)
+                    if (quantity > 0)
+                    {
+                        item.Quantity = quantity;  // Cập nhật số lượng của sản phẩm trong giỏ hàng
+                    }
+                    else
+                    {
+                        // Nếu số lượng <= 0, xóa sản phẩm khỏi giỏ hàng
+                        cart.Items.Remove(item);
+                    }
                 }
 
-                
+                // Lưu lại giỏ hàng vào session
                 HttpContext.Session.SetObjectAsJson(cartSessionKey, cart);
             }
 
-            return RedirectToAction("Index");
+            // Tính tổng số lượng trong giỏ hàng
+            int totalQuantity = cart?.Items.Sum(i => i.Quantity) ?? 0;
+
+            return Json(new { success = true, totalQuantity = totalQuantity });
         }
+
+
     }
 }

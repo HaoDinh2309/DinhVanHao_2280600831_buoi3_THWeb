@@ -1,81 +1,382 @@
-﻿@{
-    ViewData["Title"] = "Your Shopping Cart";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+﻿@model ShoppingCart
 
-@{
-    ViewData["Title"] = "Your Shopping Cart";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<style>
+    body {
+        background-color: #fffdf5;
+    }
 
-@model ShoppingCart
+    .card {
+        box-shadow: 0 8px 16px rgba(89, 89, 89, 0.1);
+    }
 
-<div class="container mt-4">
-    <h2 class="text-primary fw-bold text-center">🛒 Your Shopping Cart</h2>
+    .product-details {
+        background-color: #FCEFE6;
+        box-shadow: 0 4px 8px rgba(89, 89, 89, 0.1);
+    }
+
+    .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .btn-primary {
+        background-color: #f4a261;
+        border-color: #f4a261;
+        color: white;
+    }
+
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: #e68948 !important;
+            border-color: #e68948 !important;
+        }
+
+    .btn-outline-secondary {
+        color: #595959;
+        border-color: #595959;
+        background-color: transparent;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #f4a261;
+            border-color: #f4a261;
+            color: white;
+        }
+
+    .text-primary {
+        color: #f4a261 !important;
+    }
+
+    .bg-custom-primary {
+        background-color: #f4a261; /* Màu cam nhạt cho phần tiêu đề "Cart Items" */
+    }
+
+    .table-header {
+        background-color: #595959;
+        color: #fff;
+    }
+
+    .product-name {
+        color: #595959;
+        font-weight: 600;
+    }
+
+    .btn-success {
+        background-color: #f4a261;
+        border-color: #f4a261;
+    }
+
+        .btn-success:hover {
+            background-color: #e68948;
+            border-color: #e68948;
+        }
+
+    .btn-danger {
+        background-color: #595959;
+        border-color: #595959;
+    }
+
+        .btn-danger:hover {
+            background-color: #444444;
+            border-color: #444444;
+        }
+
+    .card-header.bg-gradient {
+        background: linear-gradient(to right, #f4a261, #e68948);
+    }
+
+    .text-custom {
+        color: #595959;
+    }
+
+    .empty-cart-container {
+        background-color: #FCEFE6;
+        border-radius: 10px;
+        padding: 30px;
+    }
+
+    /* Thêm animation cho cập nhật giỏ hàng */
+    .quantity-update {
+        animation: flash 0.5s;
+    }
+
+    .quantity-update {
+        transition: background-color 0.5s;
+        background-color: #FCEFE6;
+    }
+
+    .quantity-normal {
+        transition: background-color 0.5s;
+        background-color: transparent;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-custom fw-bold text-center">
+                <i class="fas fa-shopping-cart fa-lg me-2"></i>Your Shopping Cart
+            </h2>
+            <hr class="my-4" style="background-color: #f4a261; opacity: 0.5; height: 2px;">
+        </div>
+    </div>
 
     @if (Model.Items.Any())
     {
-        <div class="table-responsive mt-3">
-            <table class="table table-hover shadow-sm rounded-3">
-                <thead class="table-dark text-light">
-                    <tr class="text-center">
-                        <th class="p-3">Product</th>
-                        <th class="p-3">Quantity</th>
-                        <th class="p-3">Price</th>
-                        <th class="p-3">Total</th>
-                        <th class="p-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Items)
-                    {
-                        <tr class="align-middle text-center">
-                            <td class="p-3">@item.Name</td>
-                            <td class="p-3">
-                                <form method="post" asp-action="UpdateCartQuantity">
-                                    <input type="hidden" name="productId" value="@item.ProductId" />
+        <div class="card border-0 rounded-3 overflow-hidden product-details">
+            <div class="card-header bg-custom-primary text-white py-3">
+                <!-- Sử dụng màu cam cho phần tiêu đề "Cart Items" -->
+                <h5 class="mb-0 text-center">
+                    <i class="fas fa-shopping-basket me-2"></i> Cart Items
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-header">
+                            <tr class="text-center">
+                                <!-- Cột ảnh sản phẩm -->
+                                <th class="p-3">Image</th>
+                                <th class="p-3">Product</th>
+                                <th class="p-3">Quantity</th>
+                                <th class="p-3">Price</th>
+                                <th class="p-3">Total</th>
+                                <th class="p-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items">
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr class="align-middle text-center product-row" id="product-row-@item.ProductId">
+                                    <!-- Cột ảnh sản phẩm -->
+                                    <td class="p-3">
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="card-img-top" style="height: 120px; object-fit: cover;" />
+                                    </td>
 
-                                    <button type="submit" name="quantity" value="@(item.Quantity - 1)" class="btn btn-sm btn-outline-secondary"
-                                    @(item.Quantity <= 1 ? "disabled" : "")>
-                                        ➖
-                                    </button>
-
-                                    <span class="mx-2 fw-bold">@item.Quantity</span>
-
-                                    <button type="submit" name="quantity" value="@(item.Quantity + 1)" class="btn btn-sm btn-outline-primary">
-                                        ➕
-                                    </button>
-                                </form>
-                            </td>
-                            <td class="p-3">@item.Price.ToString("#,##0") VND</td>
-                            <td class="p-3 fw-bold">@((item.Price * item.Quantity).ToString("#,##0")) VND</td>
-                            <td class="p-3">
-                                <a asp-action="RemoveFromCart" asp-route-productId="@item.ProductId"
-                                   class="btn btn-danger btn-sm text-white"
-                                   onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
-                                    <i class="bi bi-trash"></i> Remove
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                    <td class="p-3 product-name">@item.Name</td>
+                                    <td class="p-3">
+                                        <div class="d-flex justify-content-center">
+                                            <div class="input-group" style="width: 150px;">
+                                                <button type="button" class="btn btn-outline-secondary btn-decrease"
+                                                        data-product-id="@item.ProductId"
+                                                @(item.Quantity <= 1 ? "disabled" : "")>
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <span id="quantity-@item.ProductId" class="input-group-text bg-white fw-bold border-secondary flex-grow-1" style="color: #595959;">@item.Quantity</span>
+                                                <button type="button" class="btn btn-outline-secondary btn-increase"
+                                                        data-product-id="@item.ProductId">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 text-custom" id="price-@item.ProductId" data-price="@item.Price">@item.Price.ToString("#,##0") VND</td>
+                                    <td class="p-3 fw-bold text-primary" id="total-@item.ProductId">@((item.Price * item.Quantity).ToString("#,##0")) VND</td>
+                                    <td class="p-3">
+                                        <button type="button" class="btn btn-danger btn-sm btn-remove"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Remove item"
+                                                data-product-id="@item.ProductId">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <h4 class="text-danger fw-bold">🛍️ Total: @Model.Items.Sum(i => i.Price * i.Quantity).ToString("#,##0") VND</h4>
-            <a href="@Url.Action("Checkout", "ShoppingCart")" class="btn btn-success btn-lg">
-                <i class="bi bi-credit-card-fill"></i> Proceed to Checkout
-            </a>
+        <div class="row mt-5">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 product-details rounded-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 text-custom">Subtotal:</h5>
+                            <span class="fw-bold text-primary" id="cart-subtotal">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("#,##0") VND</span>
+                        </div>
+                        <hr style="background-color: #f4a261; opacity: 0.5; height: 1px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-custom fw-bold mb-0">
+                                <i class="fas fa-money-bill-wave me-2"></i>Total:
+                            </h4>
+                            <h4 class="fw-bold text-primary mb-0" id="cart-total">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("#,##0") VND</h4>
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="@Url.Action("Checkout", "ShoppingCart")" class="btn btn-success btn-lg">
+                                <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     }
     else
     {
-        <div class="alert alert-warning text-center mt-4">
-            <h4>🛒 Your cart is empty!</h4>
-            <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">
-                <i class="bi bi-cart-plus"></i> Go Shopping
-            </a>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="empty-cart-container text-center py-5">
+                    <i class="fas fa-shopping-cart fa-4x mb-4" style="color: #f4a261;"></i>
+                    <h3 class="text-custom">Your cart is empty!</h3>
+                    <p class="text-custom mb-4">Looks like you haven't added any products to your cart yet.</p>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-store me-2"></i>Start Shopping
+                    </a>
+                </div>
+            </div>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+                $(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+            // Xử lý sự kiện nút giảm số lượng
+            $(document).on('click', '.btn-decrease', function() {
+                const productId = $(this).data('product-id');
+                const quantityElement = $('#quantity-' + productId);
+                const currentQty = parseInt(quantityElement.text());
+
+                if (currentQty > 1) {
+                    updateCartQuantity(productId, currentQty - 1);
+                }
+            });
+
+            // Xử lý sự kiện nút tăng số lượng
+            $(document).on('click', '.btn-increase', function() {
+                const productId = $(this).data('product-id');
+                const quantityElement = $('#quantity-' + productId);
+                const currentQty = parseInt(quantityElement.text());
+
+                updateCartQuantity(productId, currentQty + 1);
+            });
+
+            // Xử lý sự kiện xóa sản phẩm
+            $(document).on('click', '.btn-remove', function() {
+                const productId = $(this).data('product-id');
+
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
+                    updateCartQuantity(productId, 0);
+                }
+            });
+
+            // Hàm cập nhật số lượng sản phẩm
+            function updateCartQuantity(productId, quantity) {
+                $.ajax({
+                    url: '@Url.Action("UpdateCartQuantity", "ShoppingCart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: quantity },
+                    success: function(response) {
+                        if (response.success) {
+                            if (quantity > 0) {
+                                // Cập nhật số lượng hiển thị
+                                $('#quantity-' + productId).text(quantity);
+
+                                // Cập nhật tổng tiền của sản phẩm
+                                updateProductTotal(productId, quantity);
+
+                                // Thêm hiệu ứng flash
+                                $('#product-row-' + productId).addClass('quantity-update');
+                                setTimeout(function() {
+                                    $('#product-row-' + productId).removeClass('quantity-update');
+                                }, 500);
+
+                                // Cập nhật trạng thái nút decrease
+                                if (quantity === 1) {
+                                    $('[data-product-id="' + productId + '"].btn-decrease').prop('disabled', true);
+                                } else {
+                                    $('[data-product-id="' + productId + '"].btn-decrease').prop('disabled', false);
+                                }
+                            } else {
+                                // Xóa dòng sản phẩm
+                                $('#product-row-' + productId).fadeOut(300, function() {
+                                    $(this).remove();
+
+                                    // Kiểm tra nếu giỏ hàng trống
+                                    if ($('#cart-items tr').length === 0) {
+                                        location.reload(); // Tải lại trang để hiển thị giỏ hàng trống
+                                    }
+                                });
+                            }
+
+                            // Cập nhật tổng giỏ hàng
+                            updateCartTotal();
+
+                            // Update cart count badge using the value from server response
+                            updateCartBadge(response.totalQuantity);
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi cập nhật giỏ hàng!');
+                    }
+                });
+            }
+
+            // Hàm cập nhật tổng tiền của một sản phẩm
+            function updateProductTotal(productId, quantity) {
+                const pricePerUnit = parseFloat($('#price-' + productId).data('price'));
+                const newTotal = pricePerUnit * quantity;
+                $('#total-' + productId).text(formatCurrency(newTotal) + ' VND');
+            }
+
+            // Hàm cập nhật tổng giỏ hàng
+            function updateCartTotal() {
+                let total = 0;
+
+                // Tính tổng từ tất cả sản phẩm
+                $('.product-row').each(function() {
+                    const productId = $(this).attr('id').split('-')[2];
+                    const price = parseFloat($('#price-' + productId).data('price'));
+                    const quantity = parseInt($('#quantity-' + productId).text());
+                    total += price * quantity;
+                });
+
+                // Cập nhật hiển thị
+                $('#cart-subtotal').text(formatCurrency(total) + ' VND');
+                $('#cart-total').text(formatCurrency(total) + ' VND');
+            }
+
+            // Hàm định dạng tiền tệ
+            function formatCurrency(amount) {
+                return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // New function to update the cart badge using server-provided count
+            function updateCartBadge(count) {
+                // Try multiple selectors to find the cart badge
+                // This covers various common implementations of cart badges
+                const cartBadge = $('.cart-badge, .cart-count, .cart-count-badge, .badge').filter(function() {
+                    return $(this).parents('a:contains("Cart")').length > 0 ||
+                          $(this).closest('a').find('i.fa-shopping-cart,i.fa-cart-shopping').length > 0;
+                });
+
+                if (cartBadge.length > 0) {
+                    // Update the badge text
+                    cartBadge.text(count);
+
+                    // Make badge visible if items exist, hidden if zero
+                    if (count > 0) {
+                        cartBadge.removeClass('d-none').addClass('badge-update');
+                        setTimeout(function() {
+                            cartBadge.removeClass('badge-update');
+                        }, 500);
+                    } else {
+                        cartBadge.addClass('d-none');
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -1,16 +1,134 @@
 ﻿@model DinhVanHao_2280600831_buoi3_THWeb.Models.Product
 
-<h2>Thông tin chi tiết</h2>
-<div class="row">
-	<div class="col-md-4">
-		<img src="@Model.ImageUrl" alt="Ảnh sản phẩm" class="img-fluid" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; padding: 5px;" />
-		<a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary">Chỉnh Sửa</a>
-		<a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-	
-	</div>
-	<div class="col-md-8">
-	<h3>Name: @Model.Name</h3>
-	<p>Price: @Model.Price</p>
-	<p>Description: @Model.Description</p>
-	</div>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết sản phẩm</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #fffdf5; /* Màu nền be nhẹ */
+        }
+
+        .product-image {
+            transition: transform 0.3s;
+            box-shadow: 0 4px 8px rgba(89, 89, 89, 0.1); /* Màu xám nhạt cho bóng */
+        }
+
+            .product-image:hover {
+                transform: scale(1.03);
+            }
+
+        .product-details {
+            background-color: #FCEFE6; /* Màu nền vàng nhạt */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(89, 89, 89, 0.1); /* Màu xám nhạt cho bóng */
+        }
+
+        .btn-action {
+            margin-right: 10px;
+            margin-top: 15px;
+        }
+
+        .product-header {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: #f4a261; /* Màu đỏ cho giá */
+            font-weight: bold;
+        }
+
+        .product-description {
+            line-height: 1.8;
+        }
+
+        /* Nút chính và phụ */
+        .btn-primary {
+            background-color: #f4a261; /* Cam nhạt */
+            border-color: #f4a261;
+        }
+
+            .btn-primary:hover {
+                background-color: #e68948; /* Màu cam đậm khi hover */
+                border-color: #e68948;
+            }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #595959; /* Xám nhạt cho nút phụ */
+            border-color: #595959;
+        }
+
+            .btn-secondary:hover {
+                background-color: transparent;
+                color: #f4a261; /* Màu cam nhạt khi hover */
+                border-color: #f4a261;
+            }
+
+        /* Tiêu đề sản phẩm */
+        .product-header h3 {
+            color: #595959; /* Màu xám nhạt cho tiêu đề sản phẩm */
+        }
+
+        /* Mô tả sản phẩm */
+        .product-description {
+            color: #595959; /* Màu xám nhạt cho mô tả */
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h2 class="mb-4 text-center"><i class="fas fa-info-circle"></i> Thông tin chi tiết sản phẩm</h2>
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card">
+                    <img src="@Model.ImageUrl" alt="Ảnh sản phẩm" class="img-fluid product-image" />
+                    <div class="card-body text-center">
+                        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary btn-action">
+                            <i class="fas fa-edit"></i> Chỉnh Sửa
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary btn-action">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="product-details">
+                    <div class="product-header">
+                        <h3 class="mb-3">
+                            <i class="fas fa-tag"></i> @Model.Name
+                        </h3>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="product-price">
+                            <i class="fas fa-money-bill-wave"></i> @Model.Price.ToString("#,##0") VND
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5><i class="fas fa-file-alt"></i> Mô tả sản phẩm:</h5>
+                        <p class="product-description">@Model.Description</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
